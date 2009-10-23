@@ -25,11 +25,11 @@ CGI::Application::Plugin::Config::General - Add Config::General Support to CGI::
 
 =head1 VERSION
 
-Version 0.07
+Version 0.08
 
 =cut
 
-our $VERSION = '0.07';
+our $VERSION = '0.08';
 
 =head1 NOTE
 
