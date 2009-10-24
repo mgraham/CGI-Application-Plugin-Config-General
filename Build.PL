@@ -5,7 +5,7 @@ use Module::Build;
 my $builder = Module::Build->new(
     module_name         => 'CGI::Application::Plugin::Config::General',
     license             => 'perl',
-    dist_author         => 'Michael Graham <mag-perl@occamstoothbrush.com>',
+    dist_author         => 'Michael Graham <mgraham@cpan.org>',
     dist_version_from   => 'lib/CGI/Application/Plugin/Config/General.pm',
     requires => {
         'Test::More'             => 0,

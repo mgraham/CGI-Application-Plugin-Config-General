@@ -1147,7 +1147,7 @@ for L<Config::General::Match>.
 
 =head1 AUTHOR
 
-Michael Graham, C<< <mag-perl@occamstoothbrush.com> >>
+Michael Graham, C<< <mgraham@cpan.org> >>
 
 =head1 BUGS
 
