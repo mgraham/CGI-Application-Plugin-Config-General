@@ -1165,6 +1165,10 @@ Thanks to the excellent examples provided by the other
 L<CGI::Application> plugin authors:  Mark Stosberg, Michael Peters, Cees
 Hek and others.
 
+=head1 SOURCE
+
+The source code repository for this module can be found at http://github.com/mgraham/CAP-Config-General
+
 =head1 SEE ALSO
 
     CGI::Application
