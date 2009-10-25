@@ -33,3 +33,8 @@
 
 # Skip generated docs
 ^[^/]*\.html$
+
+# Skip benchmark files
+^bench
+
+
