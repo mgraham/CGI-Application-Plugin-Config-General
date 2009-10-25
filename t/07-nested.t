@@ -4,6 +4,8 @@ use warnings;
 
 use Test::More 'no_plan';
 
+my $Config;
+
 {
     package WebApp::Foo::Bar::Baz;
     use Test::More;
@@ -19,112 +21,90 @@ use Test::More 'no_plan';
             'start' => 'default',
         );
 
-        $ENV{'SCRIPT_NAME'} = '/tony';
-        $ENV{'PATH_INFO'}   = '/baz';
-        $ENV{'SITE_NAME'}   = 'fred';
-
-        $self->conf('one')->init(
+        $self->conf->init(
             -ConfigFile       => 't/conf/07-nested.conf',
             -CacheConfigFiles => 0,
         );
 
-        $ENV{'SCRIPT_NAME'} = '/tony';
-        $ENV{'PATH_INFO'}   = '/simon';
-        $ENV{'SITE_NAME'}   = 'fred';
+        $Config = $self->conf->getall;
 
-        $self->conf('two')->init(
-            -ConfigFile       => 't/conf/07-nested.conf',
-            -CacheConfigFiles => 0,
-        );
-
-        $ENV{'SCRIPT_NAME'} = '/tony';
-        $ENV{'PATH_INFO'}   = '/simon';
-        $ENV{'SITE_NAME'}   = 'wubba';
-
-        $self->conf('three')->init(
-            -ConfigFile       => 't/conf/07-nested.conf',
-            -CacheConfigFiles => 0,
-        );
-
-        $ENV{'SCRIPT_NAME'} = '/baker';
-        $ENV{'PATH_INFO'}   = '/fred';
-        $ENV{'SITE_NAME'}   = 'gordon';
-
-        $self->conf('four')->init(
-            -ConfigFile       => 't/conf/07-nested.conf',
-            -CacheConfigFiles => 0,
-        );
-
-        $ENV{'SCRIPT_NAME'} = '/tony';
-        $ENV{'PATH_INFO'}   = '';
-        $ENV{'SITE_NAME'}   = 'gordon';
-
-        $self->conf('five')->init(
-            -ConfigFile       => 't/conf/07-nested.conf',
-            -CacheConfigFiles => 0,
-        );
 
     }
 
     sub default {
-        my $self = shift;
-
-        my $config;
-
-        # site=fred; loc=/tony/baz
-        $config = $self->conf('one')->getall;
-        is($config->{'foo'},             1,        '1.foo');
-        is($config->{'gordon'},          0,        '1.gordon');
-        is($config->{'/tony'},           1,        '1./tony');
-        is($config->{'fred'},            1,        '1.fred');
-        is($config->{'simon'},           0,        '1.simon');
-        is($config->{'winner'},          'foo',    '1.winner');  # not longest, but most deeply nested
-        is($config->{'location_winner'}, '/tony',  '1.location_winner');
-        is($config->{'site_winner'},     'fred',   '1.site_winner');
-        is($config->{'app_winner'},      'foo',    '1.app_winner');
-
-        # site=wubba; loc=/tony/simon
-        $config = $self->conf('three')->getall;
-        is($config->{'foo'},             0,        '2.foo');
-        is($config->{'gordon'},          0,        '2.gordon');
-        is($config->{'/tony'},           1,        '2./tony');
-        is($config->{'fred'},            0,        '2.fred');
-        is($config->{'simon'},           0,        '2.simon');
-        is($config->{'winner'},          '/tony',  '2.winner');
-        is($config->{'location_winner'}, '/tony',  '2.location_winner');
-        is($config->{'site_winner'},     'asdf',   '2.site_winner');
-        is($config->{'app_winner'},      'asdf',   '2.app_winner');
-
-        # site=gordon; loc=/baker/fred
-        $config = $self->conf('four')->getall;
-        is($config->{'foo'},             0,        '3.foo');
-        is($config->{'gordon'},          0,        '3.gordon');
-        is($config->{'/tony'},           0,        '3./tony');
-        is($config->{'fred'},            0,        '3.fred');
-        is($config->{'simon'},           0,        '3.simon');
-        is($config->{'winner'},          'asdf',   '3.winner');
-        is($config->{'location_winner'}, 'asdf',   '3.location_winner');
-        is($config->{'site_winner'},     'asdf',   '3.site_winner');
-        is($config->{'app_winner'},      'asdf',   '3.app_winner');
-
-        # site=gordon; loc=/tony
-        $config = $self->conf('five')->getall;
-        is($config->{'foo'},             0,        '4.foo');
-        is($config->{'gordon'},          1,        '4.gordon');
-        is($config->{'/tony'},           1,        '4./tony');
-        is($config->{'fred'},            0,        '4.fred');
-        is($config->{'simon'},           0,        '4.simon');
-        is($config->{'winner'},          'gordon', '4.winner');  # not longest or highest priority, but most deeply nested
-        is($config->{'location_winner'}, '/tony',  '4.location_winner');
-        is($config->{'site_winner'},     'gordon', '4.site_winner');
-        is($config->{'app_winner'},      'asdf',   '4.app_winner');
-
         return "";
     }
 }
 
-my $webapp = WebApp::Foo::Bar::Baz->new;
-$webapp->run;
+
+#1 site=fred; loc=/tony/baz
+$ENV{'SCRIPT_NAME'} = '/tony';
+$ENV{'PATH_INFO'}   = '/baz';
+$ENV{'SITE_NAME'}   = 'fred';
+
+WebApp::Foo::Bar::Baz->new->run;
+
+is($Config->{'foo'},             1,        '1.foo');
+is($Config->{'gordon'},          0,        '1.gordon');
+is($Config->{'/tony'},           1,        '1./tony');
+is($Config->{'fred'},            1,        '1.fred');
+is($Config->{'simon'},           0,        '1.simon');
+is($Config->{'winner'},          'foo',    '1.winner');  # not longest, but most deeply nested
+is($Config->{'location_winner'}, '/tony',  '1.location_winner');
+is($Config->{'site_winner'},     'fred',   '1.site_winner');
+is($Config->{'app_winner'},      'foo',    '1.app_winner');
 
 
+#3 site=wubba; loc=/tony/simon
+$ENV{'SCRIPT_NAME'} = '/tony';
+$ENV{'PATH_INFO'}   = '/simon';
+$ENV{'SITE_NAME'}   = 'wubba';
+
+WebApp::Foo::Bar::Baz->new->run;
+
+is($Config->{'foo'},             0,        '2.foo');
+is($Config->{'gordon'},          0,        '2.gordon');
+is($Config->{'/tony'},           1,        '2./tony');
+is($Config->{'fred'},            0,        '2.fred');
+is($Config->{'simon'},           0,        '2.simon');
+is($Config->{'winner'},          '/tony',  '2.winner');
+is($Config->{'location_winner'}, '/tony',  '2.location_winner');
+is($Config->{'site_winner'},     'asdf',   '2.site_winner');
+is($Config->{'app_winner'},      'asdf',   '2.app_winner');
+
+
+#4 site=gordon; loc=/baker/fred
+$ENV{'SCRIPT_NAME'} = '/baker';
+$ENV{'PATH_INFO'}   = '/fred';
+$ENV{'SITE_NAME'}   = 'gordon';
+
+WebApp::Foo::Bar::Baz->new->run;
+
+is($Config->{'foo'},             0,        '3.foo');
+is($Config->{'gordon'},          0,        '3.gordon');
+is($Config->{'/tony'},           0,        '3./tony');
+is($Config->{'fred'},            0,        '3.fred');
+is($Config->{'simon'},           0,        '3.simon');
+is($Config->{'winner'},          'asdf',   '3.winner');
+is($Config->{'location_winner'}, 'asdf',   '3.location_winner');
+is($Config->{'site_winner'},     'asdf',   '3.site_winner');
+is($Config->{'app_winner'},      'asdf',   '3.app_winner');
+
+
+#5 site=gordon; loc=/tony
+$ENV{'SCRIPT_NAME'} = '/tony';
+$ENV{'PATH_INFO'}   = '';
+$ENV{'SITE_NAME'}   = 'gordon';
+
+WebApp::Foo::Bar::Baz->new->run;
+
+is($Config->{'foo'},             0,        '4.foo');
+is($Config->{'gordon'},          1,        '4.gordon');
+is($Config->{'/tony'},           1,        '4./tony');
+is($Config->{'fred'},            0,        '4.fred');
+is($Config->{'simon'},           0,        '4.simon');
+is($Config->{'winner'},          'gordon', '4.winner');  # not longest or highest priority, but most deeply nested
+is($Config->{'location_winner'}, '/tony',  '4.location_winner');
+is($Config->{'site_winner'},     'gordon', '4.site_winner');
+is($Config->{'app_winner'},      'asdf',   '4.app_winner');
 

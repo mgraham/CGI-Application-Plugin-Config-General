@@ -1,7 +1,9 @@
 Revision history for CGI-Application-Plugin-Config-General
 
 0.08    
-        
+        - fixed test that broke due to change introduced into CGI.pm 
+          version 3.11.  (RT #19758).
+
         - Changes of interest to module maintainers only:
           - switched to using MANIFEST.SKIP
           - fixed the makedocs script to work with more recent pod2html
