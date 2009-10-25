@@ -13,6 +13,14 @@ my $builder = Module::Build->new(
         'Config::General::Match' => 0,
         'Scalar::Util'           => 0,
     },
+    meta_add            => {
+         no_index       => {
+             directory => [ qw/
+                 misc
+                 t
+             /]
+         }
+    },
     add_to_cleanup      => [ 'CGI-Application-Plugin-Config-General-*' ],
     create_makefile_pl  => 'traditional',
 );
