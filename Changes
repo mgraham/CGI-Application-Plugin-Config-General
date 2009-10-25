@@ -1,6 +1,6 @@
 Revision history for CGI-Application-Plugin-Config-General
 
-0.08    
+0.08    2009-10-25
         - fixed test that broke due to change introduced into CGI.pm 
           version 3.11.  (RT #19758).
 
