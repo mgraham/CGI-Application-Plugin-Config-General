@@ -1167,7 +1167,7 @@ Hek and others.
 
 =head1 SOURCE
 
-The source code repository for this module can be found at http://github.com/mgraham/CAP-Config-General
+The source code repository for this module can be found at http://github.com/mgraham/CGI-Application-Plugin-Config-General
 
 =head1 SEE ALSO
 
